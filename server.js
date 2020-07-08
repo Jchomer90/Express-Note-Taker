@@ -8,14 +8,14 @@ let PORT = process.env.PORT || 3000;
 
 app.use(parser.urlencoded({ extended: false }));
 app.use(parser.json());
-app.use(parser.json({ type: "application/**json"}));
+app.use(parser.json({ type: "application/**json" }));
 app.use(express.static("public"));
 
-app.get("/notes", function(req, res) {
+app.get("/notes", function (req, res) {
     res.sendFile(path.join(__dirname, "/public/notes.html"));
 });
 
-app.get("/api/notes", function(req, res) {
+app.get("/api/notes", function (req, res) {
     res.sendFile(path.join(__dirname, "/db/db.json"));
 
     // fs.readFile(__dirname, "/db/db.json", "utf-8", function(err, data) {
@@ -32,15 +32,15 @@ app.get("/api/notes", function(req, res) {
     // });
 });
 
-app.get("*", function(req, res) {
+app.get("*", function (req, res) {
     res.sendFile(path.join(__dirname, "/public/index.html"));
 });
 
-app.post("/api/notes", function(req, res) {
+app.post("/api/notes", function (req, res) {
 
-    fs.readFile(`${__dirname}/db/db.json`, function(err, data) {
-        if (err)
-            console.log(err);
+    fs.readFile(`${__dirname}/db/db.json`, function (err, data) {
+        if (err) 
+            res.status(500).json({message: "Error"});
 
         let userNote = {
             title: req.body.title,
@@ -48,17 +48,37 @@ app.post("/api/notes", function(req, res) {
         };
         let template = JSON.parse(data);
         template.push(userNote);
-    
-        fs.writeFile(`${__dirname}/db/db.json`, JSON.stringify(template), function(err) {
-            if (err) {
-                throw err;
-            }
+
+        fs.writeFile(`${__dirname}/db/db.json`, JSON.stringify(template), function (err) {
+            if (err) throw err;
             console.log(template);
         })
-    });    
+    });
 });
 
+app.delete("/api/notes/:id", function (req, res) {
+    fs.readFile(`${__dirname}/db/db.json`, function (err, data) {
+        if (err) throw err;
 
-app.listen(PORT, function() {
+        let template = JSON.parse(data);
+
+        for (let i = 0; i < template.length; i++) {
+            if (template[i].id == req.params.id) {
+                template.splice(i, 1);
+                console.log(template);
+            }
+        }
+
+        fs.writeFile(`${__dirname}/db/db.json`, JSON.stringify(template), function (err) {
+            if (err) {
+                console.log("Here");
+            }
+        })
+        console.log("OH yeah!");
+    });
+})
+
+
+app.listen(PORT, function () {
     console.log(`App is listening on PORT ${PORT}`);
 })
