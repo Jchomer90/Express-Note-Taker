@@ -17,19 +17,6 @@ app.get("/notes", function (req, res) {
 
 app.get("/api/notes", function (req, res) {
     res.sendFile(path.join(__dirname, "/db/db.json"));
-
-    // fs.readFile(__dirname, "/db/db.json", "utf-8", function(err, data) {
-    //     if (err);
-    //         console.log("error");
-    //             let userNote = {
-    //             title: req.body.title,
-    //             text: req.body.text
-    //             };
-
-    //     let template = JSON.parse(data);
-    //     template.push(userNote);
-
-    // });
 });
 
 app.get("*", function (req, res) {
@@ -38,9 +25,11 @@ app.get("*", function (req, res) {
 
 app.post("/api/notes", function (req, res) {
 
+    let id = 1
+
     fs.readFile(`${__dirname}/db/db.json`, function (err, data) {
-        if (err) 
-            res.status(500).json({message: "Error"});
+        if (err)
+            res.status(500).json({ message: "Error" });
 
         let userNote = {
             title: req.body.title,
@@ -48,6 +37,11 @@ app.post("/api/notes", function (req, res) {
         };
         let template = JSON.parse(data);
         template.push(userNote);
+
+        for (let i = 0; i < template.length; i++) {
+            template[i].id = id;
+            id++;
+        }
 
         fs.writeFile(`${__dirname}/db/db.json`, JSON.stringify(template), function (err) {
             if (err) throw err;
@@ -70,9 +64,7 @@ app.delete("/api/notes/:id", function (req, res) {
         }
 
         fs.writeFile(`${__dirname}/db/db.json`, JSON.stringify(template), function (err) {
-            if (err) {
-                console.log("Here");
-            }
+            if (err) throw error;
         })
         console.log("OH yeah!");
     });
