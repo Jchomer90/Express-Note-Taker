@@ -47,6 +47,6 @@
   npm test
 
   ## Questions
-  If you have any questions about the repository, contact me directly at Joshuachomer@gmail.com
-  You can find more of my work on [Github](www.github.com/Jchomer90)
+  If you have any questions about the repository, contact me directly at Joshuachomer@gmail.com. 
+  You can also find more of my work on [Github](www.github.com/Jchomer90)
   
